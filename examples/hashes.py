@@ -3,11 +3,13 @@ import asyncio
 from sider import RedisClient
 
 
-async def test_client():
+async def main():
     client = await RedisClient().connect()
 
-    print(await client.hset("dude", {"bro": "man"}))
+    await client.hset("sider-hash", {"hello": "world"})
+    result = await client.hgetall("sider-hash")
+    print(result)
 
 
 if __name__ == "__main__":
-    asyncio.run(test_client())
+    asyncio.run(main())
