@@ -1,30 +1,23 @@
 import asyncio
-import logging
 import random
 
 from sider import RedisPool
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="[%(asctime)-15s] [%(name)s] [%(levelname)s] %(message)s",
-)
 
-logger = logging.getLogger(__name__)
+async def main() -> None:
+    pool = RedisPool(size=2)
 
-
-async def test_client() -> None:
-    pool = RedisPool("127.0.0.1", 6379, size=4)
-
-    async def pool_test(n: int) -> None:
+    async def pool_consumer(n: int) -> None:
         async with pool.acquire() as c:
-            logger.debug("%d acquired, held: %d", n, pool.held)
-            await c.set("hello", "world")
+            await c.set(f"key-{n+1}", f"val-{n+1}")
+            assert await c.get(f"key-{n+1}") == f"val-{n+1}"
             await asyncio.sleep(random.random())
+        print(f"pool consumer {n+1} complete")
 
-    await asyncio.gather(*[pool_test(n) for n in range(8)])
+    await asyncio.gather(*[pool_consumer(n) for n in range(8)])
 
     await pool.drain()
 
 
 if __name__ == "__main__":
-    asyncio.run(test_client())
+    asyncio.run(main())
