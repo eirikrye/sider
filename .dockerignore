@@ -1,0 +1,9 @@
+.benchmarks
+.coverage
+.tox
+.venv
+.pypyvenv
+*.egg-info
+htmlcov
+pip-wheel-metadata
+__pycache__

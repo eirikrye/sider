@@ -1,0 +1,7 @@
+language: python
+services:
+  - redis-server
+python:
+  - "3.8"
+install: pip install tox-travis
+script: tox

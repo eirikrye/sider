@@ -1,0 +1,16 @@
+.benchmarks
+.coverage
+.tox
+.venv
+.pypyvenv
+*.egg-info
+htmlcov
+pip-wheel-metadata
+__pycache__
+.vscode
+.coverage.*
+.mypy_cache
+build/
+.dmypy.json
+dump.rdb
+*.code-workspace
