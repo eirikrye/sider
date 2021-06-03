@@ -2,8 +2,6 @@ import asyncio
 import sys
 from contextlib import asynccontextmanager
 
-import aioredis
-from aredis import StrictRedis
 from sider import RedisClient
 from sider.utils import time_it
 
