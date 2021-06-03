@@ -107,6 +107,7 @@ async def main():
         await bench_aioredis(iterations)
         await bench_aredis(iterations)
         await bench_sider(iterations)
+        print()
 
 
 asyncio.run(main())

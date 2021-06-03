@@ -85,3 +85,41 @@ async def main() -> None:
 if __name__ == "__main__":
     asyncio.run(main())
 ```
+
+### benchmark
+
+according to this (informal) benchmark, sider's performance remains consistent while aioredis' performance degrades significantly as the number of commands in the pipeline/transaction grows.
+
+```shell
+% pip3 freeze | egrep '^(aredis|aioredis)'
+aioredis==1.3.1
+aredis==1.1.8
+% python3 examples/multi_bench.py
+[aioredis pipeline   ] 100 iterations, 23.8µs/it, total: 2.4ms
+[aioredis transaction] 100 iterations, 24.6µs/it, total: 2.5ms
+[aredis pipeline     ] 100 iterations, 18.7µs/it, total: 1.9ms
+[aredis transaction  ] 100 iterations, 10.2µs/it, total: 1.0ms
+[sider pipeline      ] 100 iterations, 5.8µs/it, total: 0.6ms
+[sider transaction   ] 100 iterations, 7.6µs/it, total: 0.8ms
+
+[aioredis pipeline   ] 1000 iterations, 17.6µs/it, total: 17.6ms
+[aioredis transaction] 1000 iterations, 23.0µs/it, total: 23.0ms
+[aredis pipeline     ] 1000 iterations, 9.5µs/it, total: 9.5ms
+[aredis transaction  ] 1000 iterations, 9.7µs/it, total: 9.7ms
+[sider pipeline      ] 1000 iterations, 3.3µs/it, total: 3.3ms
+[sider transaction   ] 1000 iterations, 4.1µs/it, total: 4.1ms
+
+[aioredis pipeline   ] 10000 iterations, 24.8µs/it, total: 248.2ms
+[aioredis transaction] 10000 iterations, 80.2µs/it, total: 801.6ms
+[aredis pipeline     ] 10000 iterations, 8.0µs/it, total: 80.2ms
+[aredis transaction  ] 10000 iterations, 8.0µs/it, total: 80.1ms
+[sider pipeline      ] 10000 iterations, 2.8µs/it, total: 27.6ms
+[sider transaction   ] 10000 iterations, 3.3µs/it, total: 33.4ms
+
+[aioredis pipeline   ] 40000 iterations, 31.0µs/it, total: 1241.0ms
+[aioredis transaction] 40000 iterations, 266.2µs/it, total: 10647.4ms
+[aredis pipeline     ] 40000 iterations, 7.9µs/it, total: 315.9ms
+[aredis transaction  ] 40000 iterations, 7.5µs/it, total: 300.0ms
+[sider pipeline      ] 40000 iterations, 2.7µs/it, total: 106.6ms
+[sider transaction   ] 40000 iterations, 3.3µs/it, total: 132.4ms
+```
