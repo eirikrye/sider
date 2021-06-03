@@ -78,7 +78,6 @@ class RedisPool:
         while not self._pool.empty() or (wait and self._held > 0):
             client = await self._pool.get()
             await client.close()
-            logger.debug("drained %d", self._held)
 
     @property
     def held(self) -> int:
