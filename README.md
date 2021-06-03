@@ -72,7 +72,8 @@ async def main() -> None:
 
     async def pool_consumer(n: int) -> None:
         async with pool.acquire() as c:
-            await c.set("hello", "world")
+            await c.set(f"key-{n+1}", f"val-{n+1}")
+            assert await c.get(f"key-{n+1}") == f"val-{n+1}"
             await asyncio.sleep(random.random())
         print(f"pool consumer {n+1} complete")
 
