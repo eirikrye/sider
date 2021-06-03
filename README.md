@@ -2,7 +2,7 @@
 
 [![tox](https://github.com/eirikrye/sider/actions/workflows/python_test.yml/badge.svg)](https://github.com/eirikrye/sider/actions/workflows/python_test.yml)
 
-The fastest asyncio redis client library for python3 that you (probably) shouldn't use.
+The fastest asyncio redis client library that you probably shouldn't use.
 
 ## examples
 
