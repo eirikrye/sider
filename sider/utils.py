@@ -1,7 +1,6 @@
-import logging
 import time
 from contextlib import contextmanager
-from typing import Iterator, Optional, Sequence
+from typing import Iterator, Optional
 
 
 def generate_wire(*args: bytes) -> Iterator[bytes]:

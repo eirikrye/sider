@@ -35,9 +35,8 @@ def test_mocked_writer():
         mock_writer.write.assert_called_with(expected)
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 @pytest.mark.integration
-@pytest.fixture
 async def test_keys_reads(redis, mocker):
     pipe = redis.pipeline()
     import random
@@ -54,7 +53,7 @@ async def test_keys_reads(redis, mocker):
     assert spy.call_count == 1
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_mocked_send_command():
     with patch("sider.RedisClient._send_command", new_callable=Mock) as mock_send:
         client = RedisClient()
@@ -77,7 +76,7 @@ async def test_mocked_send_command():
 # Integration tests require a running redis instance on 127.0.0.1:6379
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_sider_client():
     with pytest.raises(RedisError):
         await RedisClient(
@@ -92,7 +91,7 @@ async def test_sider_client():
     assert await client.command("CLIENT", "GETNAME") == "sider-test"
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_sider_pool(redis_pool: RedisPool):
     assert redis_pool._size == 4
     assert redis_pool.available == 0
@@ -143,7 +142,7 @@ async def test_sider_pool(redis_pool: RedisPool):
     assert redis_pool.available == 1
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_sider_sets(redis: RedisClient):
     set_items = [
         ("foo-set", ["foo", "bar", "baz"]),
@@ -156,7 +155,7 @@ async def test_sider_sets(redis: RedisClient):
     assert await redis.smembers("foo-set-nonexistant") == set()
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_sider_hashes(redis: RedisClient):
     hash_items = [
         ("foo-hash", {"foo": "bar", "baz": "qux"}),
@@ -194,7 +193,7 @@ async def test_sider_hashes(redis: RedisClient):
         assert await redis.hset("foo-hash-empty", {})
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_sider_get(redis: RedisClient):
     # set keys
     assert await redis.set("foo", "bar") is None
@@ -212,7 +211,7 @@ async def test_sider_get(redis: RedisClient):
     assert await redis.getset("qux", "baz") == "bar"
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_sider_transaction(redis: RedisClient):
     assert await redis.multi() is None
     assert redis.in_multi
@@ -242,7 +241,7 @@ async def test_sider_transaction(redis: RedisClient):
     assert not redis.in_multi
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_sider_connection(redis: RedisClient):
     assert await redis.ping() == "PONG"
     assert isinstance(await redis.ping(latency=True), int)
@@ -252,7 +251,7 @@ async def test_sider_connection(redis: RedisClient):
         await redis.connect()
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_sider_generic(redis: RedisClient):
     await redis.set("foo", "bar")
     assert await redis.type("foo") == "string"
@@ -278,7 +277,7 @@ async def test_sider_generic(redis: RedisClient):
         await redis.command("SET", "too", "many", "arguments")
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_sider_swap(redis: RedisClient):
     # database out of range
     with pytest.raises(ReplyError):
@@ -295,7 +294,7 @@ async def test_sider_swap(redis: RedisClient):
     assert await redis.get("foo-follow") == "still-exists"
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_sider_pipeline(redis: RedisClient):
     pipe = redis.pipeline()
     pipe.command("SET", "foo", "bar")

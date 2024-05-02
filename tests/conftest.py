@@ -9,6 +9,11 @@ REDIS_PORT = int(os.environ.get("REDIS_PORT", 6379))
 
 
 @pytest.fixture
+def anyio_backend():
+    return "asyncio"
+
+
+@pytest.fixture(scope="function")
 async def redis():
     client = RedisClient(host=REDIS_HOST, port=REDIS_PORT)
     client = await client.connect()
@@ -18,7 +23,7 @@ async def redis():
     await client.close()
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 async def redis_pool():
     pool = RedisPool(host=REDIS_HOST, port=REDIS_PORT, size=4)
     yield pool
