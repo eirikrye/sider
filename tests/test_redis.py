@@ -1,4 +1,4 @@
-# pylint: disable=protected-access
+# mypy: disable-error-code="func-returns-value"
 
 import os
 from unittest.mock import AsyncMock, Mock, patch
