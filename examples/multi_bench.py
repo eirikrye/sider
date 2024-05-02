@@ -22,13 +22,13 @@ def time_it(name: str, iterations: int):
     )
 
 
-async def bench_aioredis(iterations: int):
+async def bench_redis(iterations: int):
     from redis.asyncio import Redis
 
     redis = Redis(encoding="utf-8", decode_responses=True)
     await redis.flushdb()
 
-    with time_it("aioredis pipeline", iterations):
+    with time_it("redis pipeline", iterations):
         tr = redis.pipeline()
         for _ in range(iterations):
             tr.set("foo", "bar")
@@ -37,7 +37,7 @@ async def bench_aioredis(iterations: int):
     assert len(res) == iterations + 1
     assert res[-1] == "bar"
 
-    with time_it("aioredis transaction", iterations):
+    with time_it("redis transaction", iterations):
         tr = redis.pipeline(transaction=True)
         for _ in range(iterations):
             tr.set("foo", "bar")
@@ -80,7 +80,7 @@ async def bench_sider(iterations: int):
 
 async def main():
     for iterations in [100, 1000, 10000, 100000, 500000]:
-        await bench_aioredis(iterations)
+        await bench_redis(iterations)
         await bench_sider(iterations)
         print()
 
