@@ -19,7 +19,6 @@ async def get_sider():
 
 
 async def main():
-
     iterations = 400000
     bytes_keys = [b"%d" % n for n in range(iterations)]
     str_keys = ["%d" % n for n in range(iterations)]

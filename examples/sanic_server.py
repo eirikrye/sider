@@ -3,6 +3,7 @@ import sanic.exceptions
 import sanic.response
 from sanic.request import Request
 from sanic.response import HTTPResponse
+
 from sider import RedisPool
 
 app = sanic.Sanic("sider-demo")

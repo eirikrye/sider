@@ -4,7 +4,17 @@ import logging
 import secrets
 import time
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator, Dict, Iterable, List, Optional, Set, Tuple, Union
+from typing import (
+    Any,
+    AsyncGenerator,
+    Dict,
+    Iterable,
+    List,
+    Optional,
+    Set,
+    Tuple,
+    Union,
+)
 
 import hiredis
 
@@ -36,14 +46,30 @@ class Pipeline:
     def clear(self) -> None:
         self._buffer = bytearray()
 
-    async def execute(self, transaction: bool = False, ignore_results: bool = False) -> Any:
+    async def execute(
+        self, transaction: bool = False, ignore_results: bool = False
+    ) -> Any:
         buffer = self._buffer
         self.clear()
-        return await self._client._buffer_execute(buffer, transaction=transaction, ignore_results=ignore_results)  # pylint: disable=protected-access
+        return await self._client._buffer_execute(
+            buffer, transaction=transaction, ignore_results=ignore_results
+        )  # pylint: disable=protected-access
 
 
 class RedisClient:
-    __slots__ = ("_reader", "_writer", "_multi", "_parser", "_db", "_host", "_port", "_password", "_name", "_last_sent", "_encoding")
+    __slots__ = (
+        "_reader",
+        "_writer",
+        "_multi",
+        "_parser",
+        "_db",
+        "_host",
+        "_port",
+        "_password",
+        "_name",
+        "_last_sent",
+        "_encoding",
+    )
 
     def __init__(
         self,
@@ -54,7 +80,6 @@ class RedisClient:
         name: Optional[str] = None,
         encoding: Optional[str] = "utf-8",
     ):
-
         self._host = host
         self._port = port
         self._password = password
@@ -82,7 +107,10 @@ class RedisClient:
         if self._reader or self._writer:
             raise ClientError("Client is already connected.")
 
-        (self._reader, self._writer,) = await asyncio.open_connection(
+        (
+            self._reader,
+            self._writer,
+        ) = await asyncio.open_connection(
             self._host,
             self._port,
             limit=1024 * 1024 * 1024,
@@ -124,13 +152,6 @@ class RedisClient:
         if not command_buffer:
             raise ClientError("Attempted to execute empty buffer.")
         token = secrets.token_hex(8).encode()
-
-        # parser = hiredis.Reader(
-        #     encoding=encoding,
-        #     errors="strict",
-        #     replyError=ReplyError,
-        #     protocolError=ProtocolError,
-        # )
 
         if transaction:
             self._send_command(b"MULTI")
