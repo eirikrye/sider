@@ -48,8 +48,8 @@ async def test_keys_reads(redis, mocker):
     await pipe.execute()
     spy = mocker.spy(redis._reader, "readuntil")
     pipe.command("KEYS", "aliases/*")
-    l = await pipe.execute()
-    assert len(l[0]) == number
+    result = await pipe.execute()
+    assert len(result[0]) == number
     assert spy.call_count == 1
 
 

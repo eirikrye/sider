@@ -78,7 +78,7 @@ async def main():
                 p.command("SET", k, k)
             res = await p.execute(ignore_results=True)
 
-        assert res == None
+        assert res is None
         await check_and_flush()
 
         with time_it("sider pipe ignore, bytes", iterations=iterations):
@@ -87,7 +87,7 @@ async def main():
                 p.bytes_command(b"SET", k, k)
             res = await p.execute(ignore_results=True)
 
-        assert res == None
+        assert res is None
         await check_and_flush()
 
 

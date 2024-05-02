@@ -1,5 +1,3 @@
-import time
-
 from sider.utils import time_it
 
 
