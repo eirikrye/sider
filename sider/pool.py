@@ -43,9 +43,7 @@ class RedisPool:
         return self
 
     async def _get_client(self) -> RedisClient:
-        c = await RedisClient(
-            self.host, self.port, self._password, name=self.name
-        ).connect()
+        c = await RedisClient(self.host, self.port, self._password, name=self.name).connect()
         return c
 
     async def _ensure_open(self, conn: RedisClient) -> RedisClient:

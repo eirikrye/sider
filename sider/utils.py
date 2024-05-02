@@ -20,8 +20,6 @@ def time_it(name: str, iterations: Optional[int] = None) -> Iterator[None]:
     yield None
     elapsed = time.perf_counter_ns() - start
     if iterations:
-        print(
-            f"[{name}] {elapsed / iterations / 1000:.1f}µs/it, total: {elapsed * 1e-6:.1f}ms"
-        )
+        print(f"[{name}] {elapsed / iterations / 1000:.1f}µs/it, total: {elapsed * 1e-6:.1f}ms")
     else:
         print(f"[{name}] {elapsed * 1e-3:.1f}µs")

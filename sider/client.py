@@ -45,14 +45,10 @@ class Pipeline:
     def clear(self) -> None:
         self._buffer = bytearray()
 
-    async def execute(
-        self, transaction: bool = False, ignore_results: bool = False
-    ) -> Any:
+    async def execute(self, transaction: bool = False, ignore_results: bool = False) -> Any:
         buffer = self._buffer
         self.clear()
-        return await self._client._buffer_execute(
-            buffer, transaction=transaction, ignore_results=ignore_results
-        )  # pylint: disable=protected-access
+        return await self._client._buffer_execute(buffer, transaction=transaction, ignore_results=ignore_results)  # pylint: disable=protected-access
 
 
 class RedisClient:

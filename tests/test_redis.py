@@ -79,13 +79,9 @@ async def test_mocked_send_command():
 @pytest.mark.anyio
 async def test_sider_client():
     with pytest.raises(RedisError):
-        await RedisClient(
-            host=REDIS_HOST, port=REDIS_PORT, password="no-password"
-        ).connect()
+        await RedisClient(host=REDIS_HOST, port=REDIS_PORT, password="no-password").connect()
 
-    client = RedisClient(
-        host=REDIS_HOST, port=REDIS_PORT, database=1, name="sider-test"
-    )
+    client = RedisClient(host=REDIS_HOST, port=REDIS_PORT, database=1, name="sider-test")
     await client.connect()
 
     assert await client.command("CLIENT", "GETNAME") == "sider-test"
@@ -176,16 +172,12 @@ async def test_sider_hashes(redis: RedisClient):
     # try setting an existing key with a new dict, without overwriting/deleting previous fields
 
     new_dict = {"1": "2", "3": "4"}
-    assert await redis.hset(hash_items[0][0], new_dict, overwrite=False) == len(
-        new_dict.values()
-    )
+    assert await redis.hset(hash_items[0][0], new_dict, overwrite=False) == len(new_dict.values())
     assert await redis.hgetall(hash_items[0][0]) == dict(**new_dict, **hash_items[0][1])
 
     # then try overwriting it
 
-    assert await redis.hset(hash_items[0][0], new_dict, overwrite=True) == len(
-        new_dict.values()
-    )
+    assert await redis.hset(hash_items[0][0], new_dict, overwrite=True) == len(new_dict.values())
     assert await redis.hgetall(hash_items[0][0]) == new_dict
 
     # it's not possible to set empty hashes/dicts in redis
@@ -329,10 +321,7 @@ async def test_sider_pipeline(redis: RedisClient):
     with redis.pipeline() as pipe:
         pipe.command("GET", "foo")
         pipe.command("GET", "foo")
-        assert (
-            pipe._buffer
-            == b"*2\r\n$3\r\nGET\r\n$3\r\nfoo\r\n*2\r\n$3\r\nGET\r\n$3\r\nfoo\r\n"
-        )
+        assert pipe._buffer == b"*2\r\n$3\r\nGET\r\n$3\r\nfoo\r\n*2\r\n$3\r\nGET\r\n$3\r\nfoo\r\n"
         assert await pipe.execute(transaction=True, ignore_results=True) is None
         assert pipe._buffer == b""
         assert redis._last_sent[0] == b"ECHO"
