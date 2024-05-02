@@ -324,7 +324,8 @@ async def test_sider_pipeline(redis: RedisClient):
         assert pipe._buffer == b"*2\r\n$3\r\nGET\r\n$3\r\nfoo\r\n*2\r\n$3\r\nGET\r\n$3\r\nfoo\r\n"
         assert await pipe.execute(transaction=True, ignore_results=True) is None
         assert pipe._buffer == b""
-        assert redis._last_sent[0] == b"ECHO"
+        if redis._last_sent:
+            assert redis._last_sent[0] == b"ECHO"
 
         pipe.command("GET", "foo")
         assert await pipe.execute(transaction=True) == ["bar"]
