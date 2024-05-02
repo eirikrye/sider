@@ -20,21 +20,21 @@ async def setup_pool(app: sanic.Sanic, loop):
     app.ctx.pool = RedisPool(host="localhost", size=2)
 
 
-@app.middleware("request")
+@app.on_request
 async def request_middleware(request: Request) -> None:
     if hasattr(app.ctx, "pool"):
         pool = app.ctx.pool
         request.ctx.client = await pool.get()
 
 
-@app.middleware("response")
+@app.on_response
 async def response_middleware(request: Request, response: HTTPResponse) -> None:
     pool = app.ctx.pool
     if hasattr(request.ctx, "client"):
         await pool.put(request.ctx.client)
 
 
-@app.get("/<key:string>")
+@app.get("/<key:str>")
 async def get_key(request: Request, key: str) -> HTTPResponse:
     client = request.ctx.client
     value = await client.get(key)
@@ -43,14 +43,14 @@ async def get_key(request: Request, key: str) -> HTTPResponse:
     return sanic.response.text(await client.get(key) or "N/A")
 
 
-@app.route("/<key:string>", methods=["PUT", "POST", "PATCH"])
+@app.route("/<key:str>", methods=["PUT", "POST", "PATCH"])
 async def set_key(request: Request, key: str) -> HTTPResponse:
     client = request.ctx.client
     await client.set(key, request.body.decode())
     return sanic.response.raw(None, status=204)
 
 
-@app.delete("/<key:string>")
+@app.delete("/<key:str>")
 async def del_key(request: Request, key: str) -> HTTPResponse:
     client = request.ctx.client
     result = await client.command("DEL", key)
